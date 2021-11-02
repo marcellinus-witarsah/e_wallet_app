@@ -1,4 +1,4 @@
-import 'package:e_wallet_app/controller/authentication/sign_in.dart';
+import 'package:e_wallet_app/view/signin_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
