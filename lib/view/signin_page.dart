@@ -1,6 +1,6 @@
-import 'package:e_wallet_app/controller/services/auth.dart';
-import 'package:e_wallet_app/controller/services/result_status.dart';
 import 'package:e_wallet_app/model/user_model.dart';
+import 'package:e_wallet_app/services/auth.dart';
+import 'package:e_wallet_app/services/result_status.dart';
 import 'package:e_wallet_app/view/home_page.dart';
 import 'package:e_wallet_app/view/signup_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';

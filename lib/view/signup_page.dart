@@ -1,7 +1,9 @@
-import 'package:e_wallet_app/controller/services/auth.dart';
-import 'package:e_wallet_app/controller/services/db.dart';
-import 'package:e_wallet_app/controller/services/result_status.dart';
+import 'package:e_wallet_app/constants.dart';
 import 'package:e_wallet_app/model/user_model.dart';
+import 'package:e_wallet_app/services/auth.dart';
+import 'package:e_wallet_app/services/db.dart';
+import 'package:e_wallet_app/services/result_status.dart';
+import 'package:e_wallet_app/view/home_page.dart';
 import 'package:e_wallet_app/view/signin_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +34,11 @@ class _SignUpState extends State<SignUp> {
       child: TextFormField(
         autofocus: false,
         controller: _firstNameController,
+        validator: (value) {
+          if (value!.isEmpty) {
+            return "First name must not be empty";
+          }
+        },
         decoration: InputDecoration(
           contentPadding: EdgeInsets.all(20),
           prefixIcon: Icon(
@@ -39,7 +46,7 @@ class _SignUpState extends State<SignUp> {
             color: secondaryColor,
           ),
           border: OutlineInputBorder(),
-          labelText: "firstname",
+          labelText: "first name",
           labelStyle: TextStyle(
             color: secondaryColor,
           ),
@@ -52,6 +59,11 @@ class _SignUpState extends State<SignUp> {
       child: TextFormField(
         autofocus: false,
         controller: _lastNameController,
+        validator: (value) {
+          if (value!.isEmpty) {
+            return "Last name must not be empty";
+          }
+        },
         decoration: InputDecoration(
           contentPadding: EdgeInsets.all(20),
           prefixIcon: Icon(
@@ -59,7 +71,7 @@ class _SignUpState extends State<SignUp> {
             color: secondaryColor,
           ),
           border: OutlineInputBorder(),
-          labelText: "lastname",
+          labelText: "last name",
           labelStyle: TextStyle(
             color: secondaryColor,
           ),
@@ -243,27 +255,25 @@ class _SignUpState extends State<SignUp> {
 
   void signUp() async {
     if (_formKey.currentState!.validate()) {
-      // User? user;
-      // UserModel? userModel;
-      final status = await _authService.SignUpAccount(
-          _emailController.text, _passwordController.text);
-      if (status == AuthResultStatus.successful) {
+      final result = await _authService.SignUpAccount(
+        _emailController.text,
+        _passwordController.text,
+      );
+      if (result == AuthResultStatus.successful) {
         User? user = _authService.getAuthInstance().currentUser;
         UserModel userModel = UserModel(
           uid: user?.uid,
           email: user?.email,
-          password: _passwordController.text,
+          password: _passwordConfirmController.text,
           firstName: _firstNameController.text,
           lastName: _lastNameController.text,
         );
-        _dbService.addUserToDb(userModel.toMap());
-        Fluttertoast.showToast(msg: "Sign Up Succesfull");
+        _dbService.addDataToDb(Constants.dbUserCollection, userModel.toMap());
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => SignIn()));
-      } else {
-        Fluttertoast.showToast(
-            msg: await AuthExceptionHandler.handleException(status));
       }
+      Fluttertoast.showToast(
+          msg: AuthExceptionHandler.generateExceptionMessage(result));
     }
   }
 }

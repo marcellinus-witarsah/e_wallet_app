@@ -1,8 +1,8 @@
+import 'package:e_wallet_app/services/auth.dart';
 import 'package:e_wallet_app/view/signin_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:e_wallet_app/controller/services/auth.dart';
 import 'package:provider/provider.dart';
 
 //this page is a stateless as a wrapper for all wighest

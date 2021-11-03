@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:e_wallet_app/controller/services/auth.dart';
 import 'package:e_wallet_app/view/signin_page.dart';
+import 'package:e_wallet_app/view/signup_page.dart';
 import 'package:e_wallet_app/view/transfer_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +25,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Transfer(),
+      home: SignUp(),
     );
   }
 }
