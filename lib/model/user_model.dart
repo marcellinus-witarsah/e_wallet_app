@@ -8,6 +8,7 @@ class UserModel {
   final String? firstName;
   final String? lastName;
   final String? password;
+  final String? phoneNumber;
 
   UserModel({
     required this.uid,
@@ -15,6 +16,7 @@ class UserModel {
     required this.password,
     required this.firstName,
     required this.lastName,
+    required this.phoneNumber,
   });
 
   //used to return an object
@@ -25,17 +27,18 @@ class UserModel {
       password: map['password'],
       firstName: map['firstName'],
       lastName: map['lastName'],
+      phoneNumber: map['phoneNumber'],
     );
   }
 
   // convert data attributes inside this class into a map (key, value pair) or dictionary form
   Map<String, dynamic> toMap() {
     return ({
-      'uid': this.uid,
-      'email': this.email,
-      'password': this.password,
       'firstName': this.firstName,
       'lastName': this.lastName,
+      'email': this.email,
+      'password': this.password,
+      'phoneNumber': this.phoneNumber,
     });
   }
 
@@ -48,5 +51,5 @@ class UserModel {
   //     'password': this.password,
   //   });
   // }
-  
+
 }

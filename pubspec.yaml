@@ -38,6 +38,7 @@ dependencies:
   firebase_core: ^1.7.0
   provider: ^6.0.1
   fluttertoast: ^8.0.8
+  country_code_picker: ^2.0.2
 
 dev_dependencies:
   flutter_test:

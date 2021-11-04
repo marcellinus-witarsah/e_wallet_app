@@ -53,37 +53,3 @@ class _HomepageState extends State<Homepage> {
     );
   }
 }
-
-    // final authService = Provider.of<AuthService>(context);
-    // late String email;
-    // late String password;
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     title: Text("Homepage"),
-    //   ),
-    //   body: Container(
-    //     margin: EdgeInsets.symmetric(
-    //       horizontal: 50,
-    //     ),
-    //     child: Column(
-    //       mainAxisAlignment: MainAxisAlignment.center,
-    //       children: <Widget>[
-    //         const Text("Welcome Home"),
-    //         const SizedBox(
-    //           height: 30,
-    //         ),
-    //         Container(
-    //           width: double.infinity,
-    //           height: 50,
-    //           child: RaisedButton(
-    //             color: Colors.blue,
-    //             textColor: Colors.white,
-    //             splashColor: Colors.blueGrey,
-    //             child: const Text("Log Out"),
-    //             onPressed: () {},
-    //           ),
-    //         ),
-    //       ],
-    //     ),
-    //   ),
-    // );
