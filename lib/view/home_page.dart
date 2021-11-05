@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_wallet_app/constants.dart';
 import 'package:e_wallet_app/services/auth.dart';
+import 'package:e_wallet_app/services/db.dart';
 import 'package:e_wallet_app/view/signin_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -15,6 +18,7 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   final _auth = AuthService();
+  final _db = DatabaseService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(

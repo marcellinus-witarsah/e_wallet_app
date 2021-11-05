@@ -83,10 +83,10 @@ class _SignUpState extends State<SignUp> {
     );
 
     final phoneNumberField = Container(
-      child: Column(children: <Widget>[
-        SizedBox(
-            width: 100,
-            height: 60,
+      child: Row(children: [
+        Expanded(
+          flex: 1,
+          child: Container(
             child: CountryCodePicker(
               onChanged: (country) {
                 setState(() {
@@ -96,34 +96,43 @@ class _SignUpState extends State<SignUp> {
               initialSelection: countryCode,
               showCountryOnly: false,
               showOnlyCountryWhenClosed: false,
-            )),
-        TextFormField(
-          autofocus: false,
-          controller: _phoneNumberController,
-          validator: (value) {
-            //using exclamation mark (!) in front variable for telling flutter that the variable is not null
-            //this is happen because flutter will not allow null variable as it will cause compile error
-            if (value!.isEmpty) {
-              return ("Please input your phone number");
-            }
-            if (RegExp(r"^[0]").hasMatch(value)) {
-              return ("Don't include zero at the beginning");
-            }
-            if (!RegExp(r"^[0-9]{10,11}").hasMatch(value)) {
-              return ("Please enter valid email");
-            }
-          },
-          decoration: InputDecoration(
-            contentPadding: EdgeInsets.all(20),
-            border: OutlineInputBorder(),
-            labelText: "phone number",
-            labelStyle: TextStyle(
-              color: secondaryColor,
+            ),
+          ),
+        ),
+        SizedBox(
+          width: 20,
+        ),
+        Expanded(
+          flex: 2,
+          child: TextFormField(
+            autofocus: false,
+            controller: _phoneNumberController,
+            validator: (value) {
+              //using exclamation mark (!) in front variable for telling flutter that the variable is not null
+              //this is happen because flutter will not allow null variable as it will cause compile error
+              if (value!.isEmpty) {
+                return ("Please input your phone number");
+              }
+              if (RegExp(r"^[0]").hasMatch(value)) {
+                return ("Don't include zero at the beginning");
+              }
+              if (!RegExp(r"^[0-9]{10,11}").hasMatch(value)) {
+                return ("Please enter valid email");
+              }
+            },
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.all(20),
+              border: OutlineInputBorder(),
+              labelText: "phone number",
+              labelStyle: TextStyle(
+                color: secondaryColor,
+              ),
             ),
           ),
         ),
       ]),
     );
+
     //Text Field for email
     final emailField = Container(
       child: TextFormField(

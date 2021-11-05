@@ -6,7 +6,7 @@ import 'package:flutter/rendering.dart';
 
 class AuthService {
   //create a Firebase Auth instance for interacting with Firebase Auth services
-  //_auth = mean that this is a final and private variable
+  //final= mean that this is a final and private variable
   final FirebaseAuth _auth = FirebaseAuth.instance;
   late AuthResultStatus _status;
 
@@ -17,6 +17,7 @@ class AuthService {
   //sign up
   Future<AuthResultStatus> SignUpAccount(String email, String password) async {
     try {
+      //using firebase function through Firebase Auth instance for sign up
       final authResult = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
@@ -36,6 +37,7 @@ class AuthService {
   //log in
   Future<AuthResultStatus> SignInAccount(String email, String password) async {
     try {
+      //using firebase function through Firebase Auth instance for sign in
       final authResult = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
@@ -54,6 +56,7 @@ class AuthService {
 
   //sign out
   Future SignOutAccount() async {
+    //using firebase function through Firebase Auth instance for sign out
     return _auth.signOut();
   }
 }
