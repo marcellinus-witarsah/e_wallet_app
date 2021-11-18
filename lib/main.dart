@@ -1,9 +1,14 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_wallet_app/services/auth.dart';
+import 'package:e_wallet_app/services/db.dart';
 import 'package:e_wallet_app/view/home_page.dart';
+import 'package:e_wallet_app/development/navigation.dart';
 import 'package:e_wallet_app/view/signin_page.dart';
 import 'package:e_wallet_app/view/signup_page.dart';
 import 'package:e_wallet_app/view/top_up.dart';
 import 'package:e_wallet_app/view/transfer_page.dart';
+import 'package:e_wallet_app/wrapper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -11,6 +16,7 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp();
   runApp(const MyApp());
 }
@@ -25,9 +31,19 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: SignIn(),
+    return MultiProvider(
+      providers: [
+        Provider<DatabaseService>(
+          create: (_) => DatabaseService(FirebaseFirestore.instance),
+        ),
+        Provider<AuthService>(
+          create: (_) => AuthService(FirebaseAuth.instance),
+        ),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Wrapper(),
+      ),
     );
   }
 }

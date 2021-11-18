@@ -1,5 +1,9 @@
+import 'package:e_wallet_app/model/user_model.dart';
+import 'package:e_wallet_app/services/db.dart';
 import 'package:e_wallet_app/view/signin_page.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 
 class Transfer extends StatelessWidget {
   const Transfer({Key? key}) : super(key: key);
@@ -9,6 +13,8 @@ class Transfer extends StatelessWidget {
     final _userDestinationController = TextEditingController();
     final _nominalTransferController = TextEditingController();
     final _messageTransferController = TextEditingController();
+    final _userModel = Provider.of<UserModel>(context);
+    final _db = Provider.of<DatabaseService>(context);
 
     final userDestination = Container(
       child: TextFormField(
@@ -107,7 +113,10 @@ class Transfer extends StatelessWidget {
                       textColor: Colors.white,
                       splashColor: Colors.blueGrey,
                       child: const Text("Next"),
-                      onPressed: () {},
+                      onPressed: () async {
+                        await _db
+                            .getUserByEmail(_userDestinationController.text);
+                      },
                     ),
                   ),
                   const SizedBox(

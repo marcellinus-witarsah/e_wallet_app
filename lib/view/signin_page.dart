@@ -1,5 +1,6 @@
 import 'package:e_wallet_app/model/user_model.dart';
 import 'package:e_wallet_app/services/auth.dart';
+import 'package:e_wallet_app/services/db.dart';
 import 'package:e_wallet_app/services/result_status.dart';
 import 'package:e_wallet_app/view/home_page.dart';
 import 'package:e_wallet_app/view/signup_page.dart';
@@ -19,13 +20,41 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
-  //global key is used for vaildating user input inside each text field according to its validation rules
-  final _auth = AuthService();
-  final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    //global key is used for vaildating user input inside each text field according to its validation rules
+    final _auth = Provider.of<AuthService>(context);
+    final _formKey = GlobalKey<FormState>();
+    final _emailController = TextEditingController();
+    final _passwordController = TextEditingController();
+
+    void signIn(email, password) async {
+      //using exclamation mark (!) in front variable for telling flutter that the variable is not null
+      //this is happen because flutter will not allow null variable as it will cause compile error
+      if (_formKey.currentState!.validate()) {
+        final status = await _auth.SignInAccount(email, password);
+        print(status);
+        if (status == AuthResultStatus.successful) {
+          UserModel user = UserModel(_auth.authInstance.currentUser!.uid);
+          Fluttertoast.showToast(msg: "Sign in successful");
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ChangeNotifierProvider<UserModel>(
+                        create: (_) => user,
+                        child: Homepage(),
+                      )));
+        } else if (status == AuthResultStatus.userNotFound ||
+            status == AuthResultStatus.wrongPassword) {
+          Fluttertoast.showToast(msg: "Wrong email or password");
+        } else {
+          Fluttertoast.showToast(
+              msg: await AuthExceptionHandler.generateExceptionMessage(status));
+        }
+      }
+      print(_auth.authInstance.currentUser);
+    }
+
     //for capture or store value that user has input in the text field
     final emailField = Container(
       child: TextFormField(
@@ -161,25 +190,5 @@ class _SignInState extends State<SignIn> {
         ),
       ),
     );
-  }
-
-  void signIn(email, password) async {
-    //using exclamation mark (!) in front variable for telling flutter that the variable is not null
-    //this is happen because flutter will not allow null variable as it will cause compile error
-    if (_formKey.currentState!.validate()) {
-      final status = await _auth.SignInAccount(email, password);
-      print(status);
-      if (status == AuthResultStatus.successful) {
-        Fluttertoast.showToast(msg: "Sign in successful");
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Homepage()));
-      } else if (status == AuthResultStatus.userNotFound ||
-          status == AuthResultStatus.wrongPassword) {
-        Fluttertoast.showToast(msg: "Wrong email or password");
-      } else {
-        Fluttertoast.showToast(
-            msg: await AuthExceptionHandler.generateExceptionMessage(status));
-      }
-    }
   }
 }

@@ -19,19 +19,50 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  final _authService = AuthService();
-  final _dbService = DatabaseService();
-  final _formKey = GlobalKey<FormState>();
-  final _firstNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
-  final _phoneNumberController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _passwordConfirmController = TextEditingController();
-  String countryCode = "+62";
-
   @override
   Widget build(BuildContext context) {
+    final _auth = Provider.of<AuthService>(context);
+    final _db = Provider.of<DatabaseService>(context);
+    final _formKey = GlobalKey<FormState>();
+    final _firstNameController = TextEditingController();
+    final _lastNameController = TextEditingController();
+    final _phoneNumberController = TextEditingController();
+    final _emailController = TextEditingController();
+    final _passwordController = TextEditingController();
+    final _passwordConfirmController = TextEditingController();
+    String countryCode = "+62";
+
+    void signUp() async {
+      if (_formKey.currentState!.validate()) {
+        final result = await _auth.SignUpAccount(
+          _emailController.text,
+          _passwordController.text,
+        );
+        if (result == AuthResultStatus.successful) {
+          User? user = _auth.authInstance.currentUser;
+
+          Map<String, dynamic> data = {
+            'uid': user?.uid,
+            'email': user?.email,
+            'password': _passwordConfirmController.text,
+            'firstName': _firstNameController.text,
+            'lastName': _lastNameController.text,
+            'phoneNumber': (countryCode + _phoneNumberController.text),
+            'balance': 0,
+          };
+
+          _db.addDataToDb(Constants.dbUsersCollection, data, user?.uid);
+
+          Fluttertoast.showToast(msg: "Sign up successful");
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => SignIn()));
+          return;
+        }
+        Fluttertoast.showToast(
+            msg: AuthExceptionHandler.generateExceptionMessage(result));
+      }
+    }
+
     //Text Field for first name
     final firstnameField = Container(
       child: TextFormField(
@@ -270,10 +301,7 @@ class _SignUpState extends State<SignUp> {
                   Container(
                     width: double.infinity,
                     height: 50,
-                    child: RaisedButton(
-                      color: Colors.blue,
-                      textColor: Colors.white,
-                      splashColor: Colors.blueGrey,
+                    child: ElevatedButton(
                       child: const Text("Sign Up"),
                       onPressed: () {
                         signUp();
@@ -311,32 +339,5 @@ class _SignUpState extends State<SignUp> {
         ),
       ),
     );
-  }
-
-  void signUp() async {
-    if (_formKey.currentState!.validate()) {
-      final result = await _authService.SignUpAccount(
-        _emailController.text,
-        _passwordController.text,
-      );
-      if (result == AuthResultStatus.successful) {
-        User? user = _authService.getAuthInstance().currentUser;
-        UserModel userModel = UserModel(
-          uid: user?.uid,
-          email: user?.email,
-          password: _passwordConfirmController.text,
-          firstName: _firstNameController.text,
-          lastName: _lastNameController.text,
-          phoneNumber: (countryCode + _phoneNumberController.text),
-        );
-        _dbService.addDataToDb(Constants.dbUserCollection, userModel.toMap());
-        Fluttertoast.showToast(msg: "Sign up successful");
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => SignIn()));
-        return;
-      }
-      Fluttertoast.showToast(
-          msg: AuthExceptionHandler.generateExceptionMessage(result));
-    }
   }
 }

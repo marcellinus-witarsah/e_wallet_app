@@ -1,8 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_wallet_app/constants.dart';
+import 'package:e_wallet_app/development/queryresult.dart';
+import 'package:e_wallet_app/model/user_model.dart';
 import 'package:e_wallet_app/services/auth.dart';
 import 'package:e_wallet_app/services/db.dart';
 import 'package:e_wallet_app/view/signin_page.dart';
+import 'package:e_wallet_app/view/signup_page.dart';
+import 'package:e_wallet_app/view/top_up.dart';
+import 'package:e_wallet_app/view/transfer_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -17,10 +22,31 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  final _auth = AuthService();
-  final _db = DatabaseService();
   @override
   Widget build(BuildContext context) {
+    final _auth = Provider.of<AuthService>(context);
+    final _db = Provider.of<DatabaseService>(context);
+    final _userModel = Provider.of<UserModel>(context, listen: false);
+
+    print(_userModel.getUid);
+
+    Builder buildButton(page, titlePage) {
+      return Builder(builder: (BuildContext context) {
+        return ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ChangeNotifierProvider(
+                          create: (_) => _userModel,
+                          child: page,
+                        )));
+          },
+          child: Text(titlePage),
+        );
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Homepage"),
@@ -30,6 +56,11 @@ class _HomepageState extends State<Homepage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              buildButton(SignIn(), "Sign In"),
+              buildButton(SignUp(), "Sign Up"),
+              buildButton(Transfer(), "Transfer"),
+              buildButton(TopUp(), "Top Up"),
+              buildButton(QueryResult(), "Query Result"),
               Text("Homepage"),
               SizedBox(
                 height: 20,
@@ -52,6 +83,7 @@ class _HomepageState extends State<Homepage> {
                   },
                 ),
               ),
+              Text("and ${_userModel.getUid}"),
             ],
           )),
     );
