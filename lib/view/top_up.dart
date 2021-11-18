@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_wallet_app/model/user_model.dart';
 import 'package:e_wallet_app/services/auth.dart';
 import 'package:e_wallet_app/services/db.dart';
@@ -21,11 +22,8 @@ class _TopUpState extends State<TopUp> {
   @override
   Widget build(BuildContext context) {
     final _nominalTopUpController = TextEditingController();
-    final _auth = Provider.of<AuthService>(context);
-    final _db = Provider.of<DatabaseService>(context);
     final _userModel = Provider.of<UserModel>(context);
 
-    Text txt;
     final nominalTopUp = Container(
       child: TextFormField(
         autofocus: false,

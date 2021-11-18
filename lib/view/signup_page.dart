@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:e_wallet_app/constants.dart';
 import 'package:e_wallet_app/model/user_model.dart';
@@ -21,8 +22,8 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
-    final _auth = Provider.of<AuthService>(context);
-    final _db = Provider.of<DatabaseService>(context);
+    final _auth = AuthService(FirebaseAuth.instance);
+    final _db = DatabaseService(FirebaseFirestore.instance);
     final _formKey = GlobalKey<FormState>();
     final _firstNameController = TextEditingController();
     final _lastNameController = TextEditingController();
@@ -42,7 +43,6 @@ class _SignUpState extends State<SignUp> {
           User? user = _auth.authInstance.currentUser;
 
           Map<String, dynamic> data = {
-            'uid': user?.uid,
             'email': user?.email,
             'password': _passwordConfirmController.text,
             'firstName': _firstNameController.text,

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -11,21 +10,12 @@ class UserModel with ChangeNotifier {
   final String _uid;
 
   final FirebaseAuth auth = FirebaseAuth.instance;
-  final FirebaseFirestore db = FirebaseFirestore.instance;
+  final _db = DatabaseService(FirebaseFirestore.instance);
 
   UserModel(this._uid);
 
-  String get getUid {
+  String get uid {
     return _uid;
-  }
-
-  //get balance of the user wallet
-  Future getBalance() {
-    return db
-        .collection(Constants.dbUsersCollection)
-        .doc(_uid)
-        .get()
-        .then((snap) => (snap['balance']));
   }
 
   Future topUp(amount, desc) async {
@@ -34,22 +24,20 @@ class UserModel with ChangeNotifier {
       return "Transaction must be at least 10000";
     } else {
       try {
-        CollectionReference users = db.collection(Constants.dbUsersCollection);
-        dynamic curBalance = await getBalance();
+        // update user's balancer
+        dynamic curBalance = await _db.getSpecificDataField(
+            Constants.dbUsersCollection, uid, 'balance');
         print(curBalance);
         dynamic newBalance = curBalance + amount;
         print(newBalance);
-        CollectionReference transactions =
-            db.collection(Constants.dbTransactionsCollection);
 
-        users.doc(_uid).update({'balance': newBalance});
-        
-        transactions.doc().set({
-          'sender_id': _uid,
-          'receiver_id': _uid,
-          'desc': desc,
-          'amount': amount,
-          'date': DateTime.now().toString(),
+        _db.updateUserCollection(uid, {'balance': newBalance});
+
+        _db.addTransactions({
+          "senderId": uid,
+          "receiverId": uid,
+          "amount": amount,
+          "desc": desc,
         });
         return "Top Up Successful";
       } catch (e) {
@@ -58,26 +46,43 @@ class UserModel with ChangeNotifier {
     }
   }
 
-  Future transfer(senderId, amount, desc) async {
+  // transfer money
+
+  Future transfer(receiverEmail, amount, desc) async {
     //for update balance in users collections
-    dynamic curBalance = await getBalance();
+    dynamic curBalance = await _db.getSpecificDataField(
+        Constants.dbUsersCollection, uid, 'balance');
     if (curBalance < amount) {
-      return "You don't have enaough money";
+      return "You don't have enough money";
     } else {
-      CollectionReference users = db.collection(Constants.dbUsersCollection);
-      dynamic curBalance = await getBalance();
-      dynamic newBalance = curBalance - amount;
-      
-      CollectionReference transactions =
-          db.collection(Constants.dbTransactionsCollection);
-      users.doc(_uid).update({'balance': newBalance});
-      transactions.doc().set({
-        'sender_id': _uid,
-        'receiver_id': senderId,
-        'desc': desc,
-        'amount': amount,
-        'date': DateTime.now().toString(),
-      });
+      print("cur balance = ${curBalance}");
+      try {
+        // update sender's balance
+        dynamic newBalance = curBalance - amount;
+        _db.updateUserCollection(uid, {'balance': newBalance});
+        print(newBalance);
+
+        // update receiver's balance
+        dynamic receiverUid = await _db.getUserIdByEmail(receiverEmail);
+        dynamic receiverCurBalance = await _db.getSpecificDataField(
+            Constants.dbUsersCollection, receiverUid, 'balance');
+        print(receiverUid);
+        print(receiverCurBalance);
+        dynamic receiverNewBalance = receiverCurBalance + amount;
+        print(receiverNewBalance);
+        _db.updateUserCollection(receiverUid, {'balance': receiverNewBalance});
+
+        // add data transactions to firebase
+        _db.addTransactions({
+          "senderId": uid,
+          "receiverId": receiverUid,
+          "amount": amount,
+          "desc": desc,
+        });
+        return "Transaction Successful";
+      } catch (e) {
+        return "Transaction Up Error, Please Try Again $e";
+      }
     }
   }
 }

@@ -13,29 +13,11 @@ import 'package:provider/provider.dart';
 class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final _auth = Provider.of<AuthService>(context);
-    final _db = Provider.of<DatabaseService>(context);
-    return StreamBuilder(
-      stream: _auth.onAuthStateChanged,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.active) {
-          UserModel user = snapshot.data as UserModel;
-          if (user != null) {
-            // UserModel userModel = UserModel(email: user.uid, uid: user.uid);
-            return ChangeNotifierProvider<UserModel>(
-              create: (context) => user,
-              child: Homepage(),
-            );
-          }
-          return SignIn();
-        }
-        return Scaffold(
-          body: Center(
-            child: CircularProgressIndicator(),
-          ),
-        );
-      },
-    );
+    final user = Provider.of<UserModel?>(context);
+    if (user == null) {
+      return SignIn();
+    }
+    return Homepage();
   }
 }
 
@@ -70,3 +52,25 @@ class Wrapper extends StatelessWidget {
 //           }
 //           return CircularProgressIndicator();
 //         });
+
+    // return StreamBuilder(
+    //   stream: _auth.onAuthStateChanged,
+    //   builder: (context, snapshot) {
+    //     if (snapshot.connectionState == ConnectionState.active) {
+    //       UserModel user = snapshot.data as UserModel;
+    //       if (user != null) {
+    //         // UserModel userModel = UserModel(email: user.uid, uid: user.uid);
+    //         return ChangeNotifierProvider<UserModel>(
+    //           create: (context) => user,
+    //           child: Homepage(),
+    //         );
+    //       }
+    //       return const SignIn();
+    //     }
+    //     return const Scaffold(
+    //       body: Center(
+    //         child: CircularProgressIndicator(),
+    //       ),
+    //     );
+    //   },
+    // );

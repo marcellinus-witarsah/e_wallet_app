@@ -1,13 +1,7 @@
-import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_wallet_app/model/user_model.dart';
 import 'package:e_wallet_app/services/auth.dart';
 import 'package:e_wallet_app/services/db.dart';
-import 'package:e_wallet_app/view/home_page.dart';
-import 'package:e_wallet_app/development/navigation.dart';
-import 'package:e_wallet_app/view/signin_page.dart';
-import 'package:e_wallet_app/view/signup_page.dart';
-import 'package:e_wallet_app/view/top_up.dart';
-import 'package:e_wallet_app/view/transfer_page.dart';
 import 'package:e_wallet_app/wrapper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -31,15 +25,9 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        Provider<DatabaseService>(
-          create: (_) => DatabaseService(FirebaseFirestore.instance),
-        ),
-        Provider<AuthService>(
-          create: (_) => AuthService(FirebaseAuth.instance),
-        ),
-      ],
+    return StreamProvider<UserModel?>.value(
+      value: AuthService(FirebaseAuth.instance).user,
+      initialData: null,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Wrapper(),

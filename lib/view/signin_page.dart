@@ -23,7 +23,7 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     //global key is used for vaildating user input inside each text field according to its validation rules
-    final _auth = Provider.of<AuthService>(context);
+    final _auth = AuthService(FirebaseAuth.instance);
     final _formKey = GlobalKey<FormState>();
     final _emailController = TextEditingController();
     final _passwordController = TextEditingController();

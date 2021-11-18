@@ -20,33 +20,51 @@ class DatabaseService {
     }
   }
 
-  // Future getDataFromDb(collectionName) async {
-  //   return Adapter.getDataFromDb(_db.collection(collectionName));
-  // }
-
-  Future getUserByEmail(email) async {
+  Future getUserIdByEmail(email) async {
     try {
       dynamic res = await _db
           .collection('users')
           .where('email', isEqualTo: email)
           .get()
-          .then((value) => value);
-      print(res);
+          .then((QuerySnapshot querySnapshot) {
+        return querySnapshot.docs[0].id;
+      });
+      return res;
     } catch (e) {
       return "Error Finding User";
     }
-    // print("masuk");
   }
 
-  Stream<QuerySnapshot> get transactions {
-    final CollectionReference transactionsCollection =
-        _db.collection(Constants.dbTransactionsCollection);
-    return transactionsCollection.snapshots();
+  Future addTransactions(data) {
+    return transactions
+        .add({
+          'sender_id': data['senderId'],
+          'receiver_id': data['receiverId'],
+          'desc': data['desc'],
+          'amount': data['amount'],
+          'timestamp': DateTime.now().toString(),
+        })
+        .then((value) => print("Transaction data added"))
+        .catchError((error) => print("Failed to add user: $error"));
+  }
+
+  Future updateUserCollection(uid, data) {
+    return users.doc(uid).update(data);
+  }
+
+  Future getSpecificDataField(collectionName, id, fieldName) {
+    return _db
+        .collection(collectionName)
+        .doc(id)
+        .get()
+        .then((snap) => (snap[fieldName]));
+  }
+
+  CollectionReference get transactions {
+    return _db.collection(Constants.dbTransactionsCollection);
   }
 
   CollectionReference get users {
-    final CollectionReference usersCollection =
-        _db.collection(Constants.dbUsersCollection);
-    return usersCollection;
+    return _db.collection(Constants.dbUsersCollection);
   }
 }

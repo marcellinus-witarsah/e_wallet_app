@@ -24,11 +24,11 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
-    final _auth = Provider.of<AuthService>(context);
-    final _db = Provider.of<DatabaseService>(context);
-    final _userModel = Provider.of<UserModel>(context, listen: false);
+    final _auth = AuthService(FirebaseAuth.instance);
+    final _db = DatabaseService(FirebaseFirestore.instance);
+    final _userModel = Provider.of<UserModel>(context);
 
-    print(_userModel.getUid);
+    print("Halo ${_userModel.uid}");
 
     Builder buildButton(page, titlePage) {
       return Builder(builder: (BuildContext context) {
@@ -83,7 +83,6 @@ class _HomepageState extends State<Homepage> {
                   },
                 ),
               ),
-              Text("and ${_userModel.getUid}"),
             ],
           )),
     );

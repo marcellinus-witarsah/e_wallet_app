@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_wallet_app/model/user_model.dart';
 import 'package:e_wallet_app/services/db.dart';
 import 'package:e_wallet_app/view/signin_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
@@ -10,11 +12,21 @@ class Transfer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
     final _userDestinationController = TextEditingController();
     final _nominalTransferController = TextEditingController();
     final _messageTransferController = TextEditingController();
     final _userModel = Provider.of<UserModel>(context);
-    final _db = Provider.of<DatabaseService>(context);
+
+    void transferMoney(receiverEmail, amount, desc) async {
+      //using exclamation mark (!) in front variable for telling flutter that the variable is not null
+      //this is happen because flutter will not allow null variable as it will cause compile error
+      if (_formKey.currentState!.validate()) {
+        dynamic msg = await _userModel.transfer(
+            receiverEmail, double.parse(amount), desc);
+        Fluttertoast.showToast(msg: msg);
+      }
+    }
 
     final userDestination = Container(
       child: TextFormField(
@@ -22,6 +34,11 @@ class Transfer extends StatelessWidget {
         //using controller for listen and capture email input from user
         controller: _userDestinationController,
         //adding validator for email
+        validator: (value) {
+          if (value!.isEmpty) {
+            return ("Please input user destination");
+          }
+        },
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.all(20),
           prefixIcon: Icon(
@@ -43,6 +60,15 @@ class Transfer extends StatelessWidget {
         //using controller for listen and capture email input from user
         controller: _nominalTransferController,
         //adding validator for email
+        validator: (value) {
+          if (value!.isEmpty) {
+            return ("please input amount");
+          }
+          if (double.parse(value) < 10000) {
+            return ("Transaction must be at least 10.000");
+          }
+        },
+        keyboardType: TextInputType.number,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.all(20),
           prefixIcon: Icon(
@@ -64,6 +90,11 @@ class Transfer extends StatelessWidget {
         //using controller for listen and capture email input from user
         controller: _messageTransferController,
         //adding validator for email
+        validator: (value) {
+          if (value!.length > 50) {
+            return ("message can't be more than 50 characters");
+          }
+        },
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.all(20),
           prefixIcon: Icon(
@@ -90,6 +121,7 @@ class Transfer extends StatelessWidget {
               horizontal: 40,
             ),
             child: Form(
+              key: _formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -114,8 +146,12 @@ class Transfer extends StatelessWidget {
                       splashColor: Colors.blueGrey,
                       child: const Text("Next"),
                       onPressed: () async {
-                        await _db
-                            .getUserByEmail(_userDestinationController.text);
+                        dynamic message = _messageTransferController.text;
+                        if (message.isEmpty) {
+                          message = "transfer to other user";
+                        }
+                        transferMoney(_userDestinationController.text,
+                            _nominalTransferController.text, message);
                       },
                     ),
                   ),

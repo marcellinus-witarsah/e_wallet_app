@@ -20,7 +20,7 @@ class AuthService {
     return user != null ? UserModel(user.uid) : null;
   }
 
-  Stream<UserModel?> get onAuthStateChanged {
+  Stream<UserModel?> get user {
     return _authInstance.authStateChanges().map(_userFromFirebase);
   }
 
