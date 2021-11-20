@@ -13,3 +13,15 @@ class Transaction {
     required this.timestamp,
   });
 }
+
+class ListTransactions {
+  List<Transaction> _transactions = [];
+
+  List<Transaction> get transactions {
+    return _transactions;
+  }
+
+  void addTransactionToList(Transaction transaction) {
+    transactions.add(transaction);
+  }
+}

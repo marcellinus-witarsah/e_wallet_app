@@ -7,6 +7,7 @@ import 'package:e_wallet_app/services/db.dart';
 import 'package:e_wallet_app/view/signin_page.dart';
 import 'package:e_wallet_app/view/signup_page.dart';
 import 'package:e_wallet_app/view/top_up.dart';
+import 'package:e_wallet_app/view/transaction_history_page.dart';
 import 'package:e_wallet_app/view/transfer_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -60,6 +61,7 @@ class _HomepageState extends State<Homepage> {
               buildButton(SignUp(), "Sign Up"),
               buildButton(Transfer(), "Transfer"),
               buildButton(TopUp(), "Top Up"),
+              buildButton(TransactionHistory(), "Transaction History"),
               buildButton(QueryResult(), "Query Result"),
               Text("Homepage"),
               SizedBox(
