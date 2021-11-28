@@ -4,19 +4,52 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:e_wallet_app/constants.dart';
-import 'package:e_wallet_app/services/db.dart';
+import 'package:e_wallet_app/services/firebase_database_service.dart';
 
-class UserModel with ChangeNotifier {
-  final String _uid;
+class UserModel {
+  late String _uid;
+  late String _firstName;
+  late String _lastName;
+  late String _email;
+  late String _phoneNumber;
 
   final FirebaseAuth auth = FirebaseAuth.instance;
-  final _db = DatabaseService(FirebaseFirestore.instance);
+  final _db = FirebaseDatabaseService();
 
-  UserModel(this._uid);
-
-  String get uid {
-    return _uid;
+  UserModel(uid) {
+    _uid = uid;
+    // setUserData();
   }
+
+  String get uid => _uid;
+  String get firstName => _firstName;
+  String get lastName => _lastName;
+  String get email => _email;
+  String get phoneNumber => _phoneNumber;
+
+  // void setFirstName(String firstName) {
+  //   _firstName = firstName;
+  // }
+
+  // void setLastName(String lastName) {
+  //   _lastName = lastName;
+  // }
+
+  // void setEmail(String email) {
+  //   _email = email;
+  // }
+
+  // void setPhoneNumber(String phoneNumber) {
+  //   _phoneNumber = phoneNumber;
+  // }
+
+  // void setUserData() async {
+  //   dynamic userData = await _db.getUserData(_uid);
+  //   setFirstName(userData['first_name']);
+  //   setLastName(userData['last_name']);
+  //   setEmail(userData['email']);
+  //   setPhoneNumber(userData['phone_number']);
+  // }
 
   Future topUp(amount, desc) async {
     //for update balance in users collections
@@ -25,6 +58,7 @@ class UserModel with ChangeNotifier {
     } else {
       try {
         // update user's balancer
+        print(uid);
         dynamic curBalance = await _db.getSpecificDataField(
             Constants.dbUsersCollection, uid, 'balance');
         print(curBalance);

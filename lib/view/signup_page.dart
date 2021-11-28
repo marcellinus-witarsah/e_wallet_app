@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:e_wallet_app/constants.dart';
-import 'package:e_wallet_app/model/user_model.dart';
-import 'package:e_wallet_app/services/auth.dart';
-import 'package:e_wallet_app/services/db.dart';
+import 'package:e_wallet_app/services/auth_service.dart';
+import 'package:e_wallet_app/services/firebase_database_service.dart';
+import 'package:e_wallet_app/services/firebase_auth_service.dart';
 import 'package:e_wallet_app/services/result_status.dart';
-import 'package:e_wallet_app/view/home_page.dart';
 import 'package:e_wallet_app/view/signin_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -22,8 +21,8 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
-    final _auth = AuthService(FirebaseAuth.instance);
-    final _db = DatabaseService(FirebaseFirestore.instance);
+    final _auth = Provider.of<FirebaseAuthService>(context);
+    final _db = Provider.of<FirebaseDatabaseService>(context);
     final _formKey = GlobalKey<FormState>();
     final _firstNameController = TextEditingController();
     final _lastNameController = TextEditingController();
@@ -54,8 +53,7 @@ class _SignUpState extends State<SignUp> {
           _db.addDataToDb(Constants.dbUsersCollection, data, user?.uid);
 
           Fluttertoast.showToast(msg: "Sign up successful");
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => SignIn()));
+          Navigator.of(context).pushNamed('signin');
           return;
         }
         Fluttertoast.showToast(
@@ -79,7 +77,7 @@ class _SignUpState extends State<SignUp> {
             Icons.person,
             color: secondaryColor,
           ),
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
           labelText: "first name",
           labelStyle: TextStyle(
             color: secondaryColor,
@@ -130,7 +128,7 @@ class _SignUpState extends State<SignUp> {
             ),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           width: 20,
         ),
         Expanded(
@@ -148,12 +146,12 @@ class _SignUpState extends State<SignUp> {
                 return ("Don't include zero at the beginning");
               }
               if (!RegExp(r"^[0-9]{10,11}").hasMatch(value)) {
-                return ("Please enter valid email");
+                return ("Please enter valid Phone Number");
               }
             },
             decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(20),
-              border: OutlineInputBorder(),
+              contentPadding: const EdgeInsets.all(20),
+              border: const OutlineInputBorder(),
               labelText: "phone number",
               labelStyle: TextStyle(
                 color: secondaryColor,
@@ -181,12 +179,12 @@ class _SignUpState extends State<SignUp> {
           }
         },
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.all(20),
+          contentPadding: const EdgeInsets.all(20),
           prefixIcon: Icon(
             Icons.mail_rounded,
             color: secondaryColor,
           ),
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
           labelText: "email",
           labelStyle: TextStyle(
             color: secondaryColor,
@@ -213,12 +211,12 @@ class _SignUpState extends State<SignUp> {
             }
           },
           decoration: InputDecoration(
-            contentPadding: EdgeInsets.all(20),
+            contentPadding: const EdgeInsets.all(20),
             prefixIcon: Icon(
               Icons.vpn_key,
               color: secondaryColor,
             ),
-            border: OutlineInputBorder(),
+            border: const OutlineInputBorder(),
             labelText: "password",
             labelStyle: TextStyle(
               color: secondaryColor,
@@ -245,12 +243,12 @@ class _SignUpState extends State<SignUp> {
           }
         },
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.all(20),
+          contentPadding: const EdgeInsets.all(20),
           prefixIcon: Icon(
             Icons.vpn_key,
             color: secondaryColor,
           ),
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
           labelText: "confirm password",
           labelStyle: TextStyle(
             color: secondaryColor,
@@ -320,7 +318,7 @@ class _SignUpState extends State<SignUp> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => SignIn()));
+                                  builder: (context) => const SignIn()));
                         },
                         child: const Text(
                           "Sign In",

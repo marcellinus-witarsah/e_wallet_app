@@ -1,6 +1,6 @@
 import 'package:e_wallet_app/model/user_model.dart';
-import 'package:e_wallet_app/services/auth.dart';
-import 'package:e_wallet_app/services/db.dart';
+import 'package:e_wallet_app/services/auth_service.dart';
+import 'package:e_wallet_app/services/firebase_auth_service.dart';
 import 'package:e_wallet_app/services/result_status.dart';
 import 'package:e_wallet_app/view/home_page.dart';
 import 'package:e_wallet_app/view/signup_page.dart';
@@ -23,7 +23,7 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     //global key is used for vaildating user input inside each text field according to its validation rules
-    final _auth = AuthService(FirebaseAuth.instance);
+    final _auth = Provider.of<FirebaseAuthService>(context);
     final _formKey = GlobalKey<FormState>();
     final _emailController = TextEditingController();
     final _passwordController = TextEditingController();
@@ -32,24 +32,20 @@ class _SignInState extends State<SignIn> {
       //using exclamation mark (!) in front variable for telling flutter that the variable is not null
       //this is happen because flutter will not allow null variable as it will cause compile error
       if (_formKey.currentState!.validate()) {
-        final status = await _auth.SignInAccount(email, password);
-        print(status);
-        if (status == AuthResultStatus.successful) {
-          UserModel user = UserModel(_auth.authInstance.currentUser!.uid);
+        final user = await _auth.SignInAccount(email, password);
+        print(user);
+        if (user != null) {
+          UserModel userModel = UserModel(_auth.authInstance.currentUser!.uid);
           Fluttertoast.showToast(msg: "Sign in successful");
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => ChangeNotifierProvider<UserModel>(
-                        create: (_) => user,
+                  builder: (context) => Provider<UserModel>(
+                        create: (_) => userModel,
                         child: Homepage(),
                       )));
-        } else if (status == AuthResultStatus.userNotFound ||
-            status == AuthResultStatus.wrongPassword) {
-          Fluttertoast.showToast(msg: "Wrong email or password");
         } else {
-          Fluttertoast.showToast(
-              msg: await AuthExceptionHandler.generateExceptionMessage(status));
+          Fluttertoast.showToast(msg: "Wrong email or password");
         }
       }
       print(_auth.authInstance.currentUser);

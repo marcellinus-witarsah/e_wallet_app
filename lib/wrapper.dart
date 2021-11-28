@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_wallet_app/model/user_model.dart';
-import 'package:e_wallet_app/services/auth.dart';
-import 'package:e_wallet_app/services/db.dart';
+import 'package:e_wallet_app/services/auth_service.dart';
+import 'package:e_wallet_app/services/firebase_database_service.dart';
+import 'package:e_wallet_app/services/firebase_auth_service.dart';
 import 'package:e_wallet_app/view/home_page.dart';
 import 'package:e_wallet_app/view/signin_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,11 +14,13 @@ import 'package:provider/provider.dart';
 class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserModel?>(context);
-    if (user == null) {
+    final FirebaseAuthService _auth = Provider.of<FirebaseAuthService>(context);
+    final _userModel = Provider.of<UserModel?>(context);
+    if (_userModel == null) {
       return SignIn();
+    } else {
+      return Homepage();
     }
-    return Homepage();
   }
 }
 

@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_wallet_app/constants.dart';
-import 'package:e_wallet_app/development/queryresult.dart';
 import 'package:e_wallet_app/model/user_model.dart';
-import 'package:e_wallet_app/services/auth.dart';
-import 'package:e_wallet_app/services/db.dart';
+import 'package:e_wallet_app/services/auth_service.dart';
+import 'package:e_wallet_app/services/firebase_database_service.dart';
+import 'package:e_wallet_app/services/firebase_auth_service.dart';
+import 'package:e_wallet_app/view/profile_edit_page.dart';
 import 'package:e_wallet_app/view/signin_page.dart';
 import 'package:e_wallet_app/view/signup_page.dart';
 import 'package:e_wallet_app/view/top_up.dart';
@@ -25,23 +26,16 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
-    final _auth = AuthService(FirebaseAuth.instance);
-    final _db = DatabaseService(FirebaseFirestore.instance);
-    final _userModel = Provider.of<UserModel>(context);
-
-    print("Halo ${_userModel.uid}");
+    // final _auth = FirebaseAuthService();
+    final _db = Provider.of<FirebaseDatabaseService>(context);
+    final _auth = Provider.of<FirebaseAuthService>(context);
 
     Builder buildButton(page, titlePage) {
       return Builder(builder: (BuildContext context) {
         return ElevatedButton(
           onPressed: () {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ChangeNotifierProvider(
-                          create: (_) => _userModel,
-                          child: page,
-                        )));
+                context, MaterialPageRoute(builder: (context) => page));
           },
           child: Text(titlePage),
         );
@@ -52,41 +46,21 @@ class _HomepageState extends State<Homepage> {
       appBar: AppBar(
         title: const Text("Homepage"),
       ),
-      body: Container(
-          margin: EdgeInsets.symmetric(horizontal: 20),
+      body: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              buildButton(SignIn(), "Sign In"),
-              buildButton(SignUp(), "Sign Up"),
-              buildButton(Transfer(), "Transfer"),
-              buildButton(TopUp(), "Top Up"),
-              buildButton(TransactionHistory(), "Transaction History"),
-              buildButton(QueryResult(), "Query Result"),
-              Text("Homepage"),
-              SizedBox(
-                height: 20,
-              ),
-              Container(
-                width: double.infinity,
-                height: 50,
-                child: RaisedButton(
-                  color: Colors.blue,
-                  textColor: Colors.white,
-                  splashColor: Colors.blueGrey,
-                  child: const Text("Sign Out"),
-                  onPressed: () {
-                    print(_auth.SignOutAccount());
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SignIn(),
-                        ));
-                  },
-                ),
-              ),
-            ],
-          )),
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          buildButton(SignIn(), "Sign In"),
+          buildButton(SignUp(), "Sign Up"),
+          buildButton(Transfer(), "Transfer"),
+          buildButton(TopUp(), "Top Up"),
+          buildButton(TransactionHistory(), "Transaction History"),
+          buildButton(ProfilePage(), "Profile Edit"),
+          const SizedBox(
+            height: 20,
+          ),
+        ],
+      )),
     );
   }
 }
