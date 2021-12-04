@@ -1,14 +1,10 @@
-import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_wallet_app/model/user_model.dart';
-import 'package:e_wallet_app/services/auth_service.dart';
-import 'package:e_wallet_app/services/firebase_database_service.dart';
 import 'package:e_wallet_app/services/firebase_auth_service.dart';
 import 'package:e_wallet_app/view/signin_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:e_wallet_app/view/verification_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
@@ -24,8 +20,9 @@ class _TopUpState extends State<TopUp> {
   Widget build(BuildContext context) {
     final _nominalTopUpController = TextEditingController();
     final _auth = Provider.of<FirebaseAuthService>(context);
-    final _userModel = Provider.of<UserModel?>(context);
+    // final _userModel = Provider.of<UserModel?>(context);
     final _formKey = GlobalKey<FormState>();
+    final _arguments = ModalRoute.of(context)?.settings.arguments as Map;
 
     void topUpMoney(amount, userModel) async {
       if (_formKey.currentState!.validate()) {
@@ -68,44 +65,94 @@ class _TopUpState extends State<TopUp> {
         ),
       ),
     );
+    if (_arguments['verified']) {
+      return StreamBuilder<UserModel?>(
+        stream: _auth.user,
+        builder: (context, snapshot) {
+          topUpMoney(_arguments['amount'], snapshot.data);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Top Up Money"),
-      ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Container(
-            margin: const EdgeInsets.symmetric(
-              horizontal: 40,
+          return TopUpSuccesfullPage();
+        },
+      );
+      // topUpMoney(
+      //   _arguments['amount'],
+      // );
+      // return Text("lalala : ${_arguments['amount']}");
+    }
+    return StreamBuilder<UserModel?>(
+        stream: _auth.user,
+        builder: (context, snapshot) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text("Top Up Money"),
             ),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  nominalTopUp,
-                  SizedBox(
-                    height: 20,
+            body: Center(
+              child: SingleChildScrollView(
+                child: Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 40,
                   ),
-                  Container(
-                    width: double.infinity,
-                    height: 50,
-                    child: RaisedButton(
-                      color: Colors.blue,
-                      textColor: Colors.white,
-                      splashColor: Colors.blueGrey,
-                      child: const Text("Top Up"),
-                      onPressed: () async {
-                        topUpMoney(double.parse(_nominalTopUpController.text),
-                            _userModel);
-                      },
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text("${_arguments['verified']}"),
+                        Text("${_arguments['amount']}"),
+                        nominalTopUp,
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Container(
+                          width: double.infinity,
+                          height: 50,
+                          child: RaisedButton(
+                            color: Colors.blue,
+                            textColor: Colors.white,
+                            splashColor: Colors.blueGrey,
+                            child: const Text("Top Up"),
+                            onPressed: () {
+                              Navigator.popAndPushNamed(context, '/pin',
+                                  arguments: {
+                                    'amount': _nominalTopUpController.text,
+                                    'destination': '/topup',
+                                    'usage': PinCodeUsage.verification
+                                  });
+                              // topUpMoney(
+                              //     double.parse(_nominalTopUpController.text),
+                              //     snapshot.data);
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
             ),
-          ),
+          );
+        });
+  }
+}
+
+class TopUpSuccesfullPage extends StatelessWidget {
+  const TopUpSuccesfullPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text("Top Up Succesfull"),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/homepage');
+              },
+              child: Text("homepage"),
+            )
+          ],
         ),
       ),
     );

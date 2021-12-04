@@ -1,17 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:e_wallet_app/constants.dart';
-import 'package:e_wallet_app/model/user_model.dart';
-import 'package:e_wallet_app/services/auth_service.dart';
 import 'package:e_wallet_app/services/firebase_database_service.dart';
 import 'package:e_wallet_app/services/firebase_auth_service.dart';
 import 'package:e_wallet_app/view/profile_edit_page.dart';
+import 'package:e_wallet_app/view/qr_page.dart';
 import 'package:e_wallet_app/view/signin_page.dart';
 import 'package:e_wallet_app/view/signup_page.dart';
 import 'package:e_wallet_app/view/top_up.dart';
 import 'package:e_wallet_app/view/transaction_history_page.dart';
 import 'package:e_wallet_app/view/transfer_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:e_wallet_app/view/verification_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -30,16 +26,26 @@ class _HomepageState extends State<Homepage> {
     final _db = Provider.of<FirebaseDatabaseService>(context);
     final _auth = Provider.of<FirebaseAuthService>(context);
 
-    Builder buildButton(page, titlePage) {
-      return Builder(builder: (BuildContext context) {
-        return ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => page));
-          },
-          child: Text(titlePage),
-        );
-      });
+    Builder buildButton(pageRoute, titlePage, args) {
+      if (args == null) {
+        return Builder(builder: (BuildContext context) {
+          return ElevatedButton(
+            onPressed: () {
+              Navigator.pushNamed(context, pageRoute);
+            },
+            child: Text(titlePage),
+          );
+        });
+      } else {
+        return Builder(builder: (BuildContext context) {
+          return ElevatedButton(
+            onPressed: () {
+              Navigator.pushNamed(context, pageRoute, arguments: args);
+            },
+            child: Text(titlePage),
+          );
+        });
+      }
     }
 
     return Scaffold(
@@ -50,12 +56,14 @@ class _HomepageState extends State<Homepage> {
           child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          buildButton(SignIn(), "Sign In"),
-          buildButton(SignUp(), "Sign Up"),
-          buildButton(Transfer(), "Transfer"),
-          buildButton(TopUp(), "Top Up"),
-          buildButton(TransactionHistory(), "Transaction History"),
-          buildButton(ProfilePage(), "Profile Edit"),
+          buildButton('/signin', "Sign In", null),
+          buildButton('/signup', "Sign Up", null),
+          buildButton('/transfer', "Transfer", null),
+          buildButton('/topup', "Top Up", {'verified': false}),
+          buildButton('/transaction_history', "Transaction History", null),
+          buildButton('/profile', "Profile Edit", null),
+          // buildButton(QRPage(), "QR Page"),
+          buildButton(PinCodePage(), "Pin Code Page", null),
           const SizedBox(
             height: 20,
           ),

@@ -1,6 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_wallet_app/model/user_model.dart';
-import 'package:e_wallet_app/services/firebase_database_service.dart';
 import 'package:e_wallet_app/services/firebase_auth_service.dart';
 import 'package:e_wallet_app/view/signin_page.dart';
 import 'package:flutter/material.dart';

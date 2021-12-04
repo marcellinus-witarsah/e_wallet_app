@@ -15,12 +15,17 @@ class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final FirebaseAuthService _auth = Provider.of<FirebaseAuthService>(context);
-    final _userModel = Provider.of<UserModel?>(context);
-    if (_userModel == null) {
-      return SignIn();
-    } else {
-      return Homepage();
-    }
+    // final _userModel = Provider.of<UserModel?>(context);
+    return StreamBuilder<UserModel?>(
+      stream: _auth.user,
+      builder: (context, snapshot) {
+        if (snapshot.data == null) {
+          return SignIn();
+        } else {
+          return Homepage();
+        }
+      },
+    );
   }
 }
 

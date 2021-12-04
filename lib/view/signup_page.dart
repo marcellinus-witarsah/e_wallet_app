@@ -1,7 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:e_wallet_app/constants.dart';
-import 'package:e_wallet_app/services/auth_service.dart';
 import 'package:e_wallet_app/services/firebase_database_service.dart';
 import 'package:e_wallet_app/services/firebase_auth_service.dart';
 import 'package:e_wallet_app/services/result_status.dart';
