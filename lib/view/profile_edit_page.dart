@@ -53,73 +53,71 @@ class _ProfilePageState extends State<ProfilePage> {
       body: StreamBuilder<UserModel?>(
         stream: _auth.user,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.active) {
-            final _userModel = snapshot.data;
-            return StreamBuilder<DocumentSnapshot?>(
-                stream: _db.getUserData(_userModel?.uid),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.active) {
-                    return Center(
-                      child: SingleChildScrollView(
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 40,
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              const SizedBox(
-                                height: 20,
+          return FutureBuilder<DocumentSnapshot>(
+              future: _db.getUserData(snapshot.data?.uid),
+              builder: (BuildContext context,
+                  AsyncSnapshot<DocumentSnapshot> docSnapshot) {
+                if (docSnapshot.hasData) {
+                  return Center(
+                    child: SingleChildScrollView(
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 40,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            // Display User Information
+                            displayUserInformation(context, docSnapshot),
+                            Container(
+                              width: double.infinity,
+                              height: 50,
+                              child: ElevatedButton(
+                                child: const Text("Edit Profile"),
+                                onPressed: () {
+                                  Navigator.popAndPushNamed(
+                                      context, '/profile_edit');
+                                },
                               ),
-                              displayUserInformation(context, snapshot),
-                              Container(
-                                width: double.infinity,
-                                height: 50,
-                                child: ElevatedButton(
-                                  child: const Text("Edit Profile"),
-                                  onPressed: () {
-                                    Navigator.push(
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                              width: double.infinity,
+                              height: 50,
+                              child: RaisedButton(
+                                color: Colors.blue,
+                                textColor: Colors.white,
+                                splashColor: Colors.blueGrey,
+                                child: const Text("Sign Out"),
+                                onPressed: () {
+                                  print(_auth.SignOutAccount());
+                                  Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => ProfileEditPage(),
-                                      ),
-                                    );
-                                  },
-                                ),
+                                        builder: (context) => SignIn(),
+                                      ));
+                                },
                               ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              Container(
-                                width: double.infinity,
-                                height: 50,
-                                child: RaisedButton(
-                                  color: Colors.blue,
-                                  textColor: Colors.white,
-                                  splashColor: Colors.blueGrey,
-                                  child: const Text("Sign Out"),
-                                  onPressed: () {
-                                    print(_auth.SignOutAccount());
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => SignIn(),
-                                        ));
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
-                    );
-                  } else {
-                    return const CircularProgressIndicator();
-                  }
-                });
-          } else {
-            return const CircularProgressIndicator();
-          }
+                    ),
+                  );
+                } else {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[CircularProgressIndicator()],
+                    ),
+                  );
+                }
+              });
         },
       ),
     );
@@ -291,74 +289,72 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
       body: StreamBuilder<UserModel?>(
         stream: _auth.user,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.active) {
-            final _userModel = snapshot.data;
-            return StreamBuilder<DocumentSnapshot?>(
-                stream: _db.getUserData(_userModel?.uid),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.active) {
-                    final userData = snapshot.data;
-                    return Center(
-                      child: SingleChildScrollView(
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 40,
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              const SizedBox(
-                                height: 20,
+          final _userModel = snapshot.data;
+          return FutureBuilder<DocumentSnapshot>(
+              future: _db.getUserData(_userModel?.uid),
+              builder: (BuildContext context,
+                  AsyncSnapshot<DocumentSnapshot> docSnapshot) {
+                if (docSnapshot.hasData) {
+                  final userData = snapshot.data;
+                  return Center(
+                    child: SingleChildScrollView(
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 40,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            firstnameField(docSnapshot.data?['first_name']),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            lastnameField(docSnapshot.data?['last_name']),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            phoneNumberField(docSnapshot.data?['phone_number']),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            emailField(docSnapshot.data?['email']),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                              width: double.infinity,
+                              height: 50,
+                              child: ElevatedButton(
+                                child: const Text("Update Profile"),
+                                onPressed: () async {
+                                  await _db
+                                      .updateUserCollection(_userModel?.uid, {
+                                    'first_name': _firstNameController.text,
+                                    'last_name': _lastNameController.text,
+                                    'phone_number': countryCode +
+                                        _phoneNumberController.text,
+                                    'email': _emailController.text,
+                                  });
+                                  Navigator.popAndPushNamed(
+                                      context, '/profile');
+                                },
                               ),
-                              firstnameField(userData?['first_name']),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              lastnameField(userData?['last_name']),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              phoneNumberField(userData?['phone_number']),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              emailField(userData?['email']),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              Container(
-                                width: double.infinity,
-                                height: 50,
-                                child: ElevatedButton(
-                                  child: const Text("Update Profile"),
-                                  onPressed: () async {
-                                    await _db
-                                        .updateUserCollection(_userModel?.uid, {
-                                      'first_name': _firstNameController.text,
-                                      'last_name': _lastNameController.text,
-                                      'phone_number': countryCode +
-                                          _phoneNumberController.text,
-                                      'email': _emailController.text,
-                                    });
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                            ],
-                          ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                          ],
                         ),
                       ),
-                    );
-                  } else {
-                    return const CircularProgressIndicator();
-                  }
-                });
-          } else {
-            return const CircularProgressIndicator();
-          }
+                    ),
+                  );
+                } else {
+                  return const CircularProgressIndicator();
+                }
+              });
         },
       ),
     );

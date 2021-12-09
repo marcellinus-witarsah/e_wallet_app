@@ -57,8 +57,8 @@ class FirebaseDatabaseService {
         .then((snap) => (snap[fieldName]));
   }
 
-  Stream<DocumentSnapshot> getUserData(uid) {
-    return users.doc(uid).snapshots();
+  Future<DocumentSnapshot> getUserData(uid) {
+    return users.doc(uid).get();
   }
 
   CollectionReference get transactions {

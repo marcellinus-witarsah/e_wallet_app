@@ -70,8 +70,8 @@ class _PinCodePageState extends State<PinCodePage> {
                 child: Column(
                   children: [
                     Expanded(
-                      child: StreamBuilder<DocumentSnapshot?>(
-                          stream: _db.getUserData(user?.uid),
+                      child: FutureBuilder<DocumentSnapshot?>(
+                          future: _db.getUserData(user?.uid),
                           builder: (context, docSnapshot) {
                             return Container(
                               alignment: const Alignment(0, 0.5),
