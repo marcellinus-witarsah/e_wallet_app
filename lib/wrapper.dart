@@ -15,6 +15,7 @@ class Wrapper extends StatefulWidget {
 
 class _WrapperState extends State<Wrapper> {
   final UserController _userController = Get.put(UserController());
+  final DatabaseController _databaseController = Get.put(DatabaseController());
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,6 @@ class _WrapperState extends State<Wrapper> {
       stream: _userController.user,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          print(snapshot.data?.uid);
           return homeWithSidebar();
         }
         return MyHomePage();

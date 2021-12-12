@@ -4,17 +4,10 @@ import 'package:e_wallet_app/controller/database_controller.dart';
 import 'package:e_wallet_app/controller/user_controller.dart';
 import 'package:e_wallet_app/models/user_model.dart';
 import 'package:e_wallet_app/ui/common/theme_helper.dart';
-import 'package:e_wallet_app/ui/pages/login_page.dart';
-import 'package:e_wallet_app/ui/pages/splash_screen.dart';
 import 'package:e_wallet_app/ui/pages/widgets/header_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-
-import 'forgot_password_page.dart';
-import 'forgot_password_verification_page.dart';
-import 'registration_page.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -51,7 +44,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         Container(
                           alignment: Alignment.center,
                           margin: const EdgeInsets.fromLTRB(25, 10, 25, 10),
-                          padding: const EdgeInsets.fromLTRB(10, 150, 10, 0),
+                          padding: const EdgeInsets.fromLTRB(10, 130, 10, 0),
                           child: Column(
                             children: [
                               Container(
@@ -155,6 +148,44 @@ class _ProfilePageState extends State<ProfilePage> {
                                             )
                                           ],
                                         ),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    Container(
+                                      decoration: ThemeHelper()
+                                          .buttonBoxDecoration(context),
+                                      child: ElevatedButton(
+                                        style: ThemeHelper().buttonStyle(),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 45),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: <Widget>[
+                                              const Icon(Icons.qr_code),
+                                              Text(
+                                                'Show QR Code'.toUpperCase(),
+                                                style: const TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return _userController
+                                                    .popUpQrCode(
+                                                        snapshot.data?.uid,
+                                                        context);
+                                              });
+                                        },
                                       ),
                                     ),
                                     const SizedBox(

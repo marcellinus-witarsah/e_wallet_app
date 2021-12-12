@@ -65,16 +65,11 @@ class DatabaseController extends GetxController {
     return users.doc(uid).get();
   }
 
-  // Get all transactions data that are related to user logged in
-  Stream<QuerySnapshot> getUserDataById(uid) {
-    return transactions
-        .where('receiver_id', isEqualTo: uid)
-        .orderBy("timestamp")
-        .snapshots();
-  }
-
   Stream<QuerySnapshot> getAllTransactionRecordsById(uid) {
-    return transactions.where('sender_id', isEqualTo: uid).snapshots();
+    return transactions
+        .where('sender_id', isEqualTo: uid)
+        .orderBy('timestamp', descending: true)
+        .snapshots();
   }
 
   // return trabnsactions collection

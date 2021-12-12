@@ -21,7 +21,6 @@ class _TopUpPageState extends State<TopUpPage> {
   bool checkedValue = false;
   bool checkboxValue = false;
   final _amountController = TextEditingController();
-  Color c = HexColor("#424a7b");
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +38,7 @@ class _TopUpPageState extends State<TopUpPage> {
                 ),
                 InkWell(
                   onTap: () {
-                    Get.offNamed('homepage');
+                    Get.offNamed('/homepage');
                   },
                   child: Container(
                     padding: const EdgeInsets.fromLTRB(10, 33, 0, 0),
@@ -82,7 +81,6 @@ class _TopUpPageState extends State<TopUpPage> {
                           decoration: ThemeHelper().inputBoxDecorationShaddow(),
                         ),
                         const SizedBox(height: 20.0),
-                        const SizedBox(height: 20.0),
                         Container(
                           decoration:
                               ThemeHelper().buttonBoxDecoration(context),
@@ -102,16 +100,6 @@ class _TopUpPageState extends State<TopUpPage> {
                             ),
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                // Navigator.popAndPushNamed(context, '/pin',
-                                //     arguments: {
-                                //       'data': {
-                                //         'amount': _amountController.text
-                                //       },
-                                //       'transaction_type': TransactionType.topup,
-                                //       'destination': '/transaction_result',
-                                //       'usage':
-                                //           PinCodeUsage.verificationTransaction
-                                //     });
                                 Get.offNamed('/pin', arguments: {
                                   'data': {'amount': _amountController.text},
                                   'pinDesc':

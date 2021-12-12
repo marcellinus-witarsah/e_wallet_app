@@ -64,30 +64,23 @@
 //   }
 // }
 
-import 'package:e_wallet_app/controller/database_controller.dart';
-import 'package:e_wallet_app/controller/transaction_controller.dart';
-import 'package:e_wallet_app/controller/user_controller.dart';
-import 'package:e_wallet_app/ui/home_screen.dart';
 import 'package:e_wallet_app/ui/pages/edit_profile_page.dart';
 import 'package:e_wallet_app/ui/pages/forgot_password_verification_page.dart';
 import 'package:e_wallet_app/ui/pages/login_page.dart';
 import 'package:e_wallet_app/ui/pages/profile_page.dart';
 import 'package:e_wallet_app/ui/pages/registration_page.dart';
-import 'package:e_wallet_app/ui/pages/splash_screen.dart';
+import 'package:e_wallet_app/ui/qr_code_page.dart';
 import 'package:e_wallet_app/ui/topup_screen.dart';
 import 'package:e_wallet_app/ui/transaction_history_screen.dart';
 import 'package:e_wallet_app/ui/transaction_result.dart';
 import 'package:e_wallet_app/ui/transfer_screen.dart';
-import 'package:e_wallet_app/view/home_page.dart';
 import 'package:e_wallet_app/wrapper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:e_wallet_app/ui/home_screen_with_sidebar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -100,9 +93,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    UserController _userController = Get.put(UserController());
-    _userController.SignOutAccount();
-    _userController.SignInAccount("asd@gmail.com", "Optimus2810");
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Login UI',
@@ -122,6 +112,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/transfer', page: () => TransferPage()),
         GetPage(name: '/profile', page: () => ProfilePage()),
         GetPage(name: '/editprofile', page: () => EditProfilePage()),
+        GetPage(name: '/qrcodepage', page: () => const QRCodePage()),
       ],
     );
   }

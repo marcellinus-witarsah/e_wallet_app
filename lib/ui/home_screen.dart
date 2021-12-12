@@ -145,13 +145,18 @@ class _homeScreenState extends State<homeScreen> {
                                   fontWeight: FontWeight.w800,
                                   fontFamily: 'avenir'),
                             ),
-                            Container(
-                              height: 60,
-                              width: 60,
-                              decoration: const BoxDecoration(
-                                  image: DecorationImage(
-                                      image: AssetImage(
-                                          'asset/images/scanqr.png'))),
+                            InkWell(
+                              onTap: () async {
+                                await _userController.scanQRCode();
+                              },
+                              child: Container(
+                                height: 60,
+                                width: 60,
+                                decoration: const BoxDecoration(
+                                    image: DecorationImage(
+                                        image: AssetImage(
+                                            'asset/images/scanqr.png'))),
+                              ),
                             )
                           ],
                         ),

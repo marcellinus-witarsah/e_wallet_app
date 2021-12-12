@@ -86,7 +86,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                               boxShadow: const [
                                                 BoxShadow(
                                                   color: Colors.black12,
-                                                  blurRadius: 20,
+                                                  blurRadius: 30,
                                                   offset: Offset(5, 5),
                                                 ),
                                               ],
@@ -145,7 +145,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       decoration: ThemeHelper()
                                           .inputBoxDecorationShaddow(),
                                     ),
-                                    const SizedBox(height: 20.0),
+                                    const SizedBox(height: 30.0),
                                     Container(
                                       child: TextFormField(
                                         controller: _emailController,
@@ -170,7 +170,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       decoration: ThemeHelper()
                                           .inputBoxDecorationShaddow(),
                                     ),
-                                    const SizedBox(height: 20.0),
+                                    const SizedBox(height: 30.0),
                                     Container(
                                       child: TextFormField(
                                         controller:
@@ -194,7 +194,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       decoration: ThemeHelper()
                                           .inputBoxDecorationShaddow(),
                                     ),
-                                    const SizedBox(height: 20.0),
+                                    const SizedBox(height: 30.0),
                                     Container(
                                       decoration: ThemeHelper()
                                           .buttonBoxDecoration(context),

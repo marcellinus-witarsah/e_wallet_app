@@ -1,14 +1,11 @@
-import 'package:async/async.dart';
 import 'package:e_wallet_app/constants.dart';
 import 'package:e_wallet_app/controller/user_controller.dart';
 import 'package:e_wallet_app/enums.dart';
 import 'package:e_wallet_app/models/user_model.dart';
-import 'package:e_wallet_app/services/firebase_auth_service.dart';
+import 'package:e_wallet_app/ui/common/theme_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:provider/provider.dart';
 
 class TransactionResult extends StatefulWidget {
   const TransactionResult({Key? key}) : super(key: key);
@@ -21,7 +18,9 @@ class _TransactionResultState extends State<TransactionResult> {
   final UserController _userController = Get.put(UserController());
   @override
   Widget build(BuildContext context) {
-    final _arguments = ModalRoute.of(context)!.settings.arguments as Map;
+    // final _arguments = ModalRoute.of(context)!.settings.arguments as Map;
+    // final _arguments =  as Map;
+    final _arguments = Get.arguments as Map<String, dynamic>;
 
     Future commitTransaction(userModel, data) {
       dynamic msg = "There's an error occured";
@@ -65,25 +64,38 @@ class _TransactionResultState extends State<TransactionResult> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Text(msgSnapshot.data),
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pushNamed(context, '/homepage');
-                                },
-                                child: const Text("homepage"),
-                              )
+                              Text(
+                                msgSnapshot.data,
+                                style: const TextStyle(
+                                    fontSize: 21,
+                                    fontWeight: FontWeight.w800,
+                                    fontFamily: 'avenir'),
+                              ),
+                              const SizedBox(
+                                height: 40,
+                              ),
+                              Container(
+                                decoration:
+                                    ThemeHelper().buttonBoxDecoration(context),
+                                child: ElevatedButton(
+                                  style: ThemeHelper().buttonStyle(),
+                                  child: Text(
+                                    'homepage'.toUpperCase(),
+                                    style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, '/homepage');
+                                  },
+                                ),
+                              ),
                             ],
                           ),
                         );
                       } else {
-                        return Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const <Widget>[
-                              CircularProgressIndicator(),
-                            ],
-                          ),
-                        );
+                        return costumizedCircularIndicator;
                       }
                     });
               }
@@ -97,14 +109,7 @@ class _TransactionResultState extends State<TransactionResult> {
                 ),
               );
             }
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const <Widget>[
-                  CircularProgressIndicator(),
-                ],
-              ),
-            );
+            return costumizedCircularIndicator;
           }),
     );
   }
