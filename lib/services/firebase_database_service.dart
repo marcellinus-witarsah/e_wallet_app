@@ -8,10 +8,10 @@ class FirebaseDatabaseService {
   void addDataToDb(collectionName, data, uid) {
     CollectionReference dataCollection = _db.collection(collectionName);
     switch (collectionName) {
-      case Constants.dbUsersCollection:
+      case dbUsersCollection:
         dataCollection.doc(uid).set(data);
         break;
-      case Constants.dbTransactionsCollection:
+      case dbTransactionsCollection:
         dataCollection.doc().set(data);
         break;
     }
@@ -57,16 +57,16 @@ class FirebaseDatabaseService {
         .then((snap) => (snap[fieldName]));
   }
 
-  Future<DocumentSnapshot> getUserData(uid) {
+  Future<DocumentSnapshot?> getUserData(uid) {
     return users.doc(uid).get();
   }
 
   CollectionReference get transactions {
-    return _db.collection(Constants.dbTransactionsCollection);
+    return _db.collection(dbTransactionsCollection);
   }
 
   CollectionReference get users {
-    return _db.collection(Constants.dbUsersCollection);
+    return _db.collection(dbUsersCollection);
   }
 
   Stream<QuerySnapshot> getUserDataById(uid) {

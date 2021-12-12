@@ -1,29 +1,31 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:e_wallet_app/model/user_model.dart';
-import 'package:e_wallet_app/services/auth_service.dart';
-import 'package:e_wallet_app/services/firebase_database_service.dart';
-import 'package:e_wallet_app/services/firebase_auth_service.dart';
-import 'package:e_wallet_app/view/home_page.dart';
-import 'package:e_wallet_app/view/signin_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:e_wallet_app/controller/database_controller.dart';
+import 'package:e_wallet_app/controller/user_controller.dart';
+import 'package:e_wallet_app/main.dart';
+import 'package:e_wallet_app/models/user_model.dart';
+import 'package:e_wallet_app/ui/home_screen_with_sidebar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 
 // To check if user already sign in or not
-class Wrapper extends StatelessWidget {
+class Wrapper extends StatefulWidget {
+  @override
+  State<Wrapper> createState() => _WrapperState();
+}
+
+class _WrapperState extends State<Wrapper> {
+  final UserController _userController = Get.put(UserController());
+
   @override
   Widget build(BuildContext context) {
-    final FirebaseAuthService _auth = Provider.of<FirebaseAuthService>(context);
-    // final _userModel = Provider.of<UserModel?>(context);
     return StreamBuilder<UserModel?>(
-      stream: _auth.user,
+      stream: _userController.user,
       builder: (context, snapshot) {
-        if (snapshot.data == null) {
-          return SignIn();
-        } else {
-          return Homepage();
+        if (snapshot.hasData) {
+          print(snapshot.data?.uid);
+          return homeWithSidebar();
         }
+        return MyHomePage();
       },
     );
   }

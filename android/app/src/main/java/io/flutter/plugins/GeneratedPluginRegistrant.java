@@ -35,5 +35,10 @@ public final class GeneratedPluginRegistrant {
     } catch(Exception e) {
       Log.e(TAG, "Error registering plugin fluttertoast, io.github.ponnamkarthik.toast.fluttertoast.FlutterToastPlugin", e);
     }
+    try {
+      flutterEngine.getPlugins().add(new com.ggichure.github.hexcolor.HexcolorPlugin());
+    } catch(Exception e) {
+      Log.e(TAG, "Error registering plugin hexcolor, com.ggichure.github.hexcolor.HexcolorPlugin", e);
+    }
   }
 }

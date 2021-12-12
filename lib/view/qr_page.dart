@@ -42,7 +42,7 @@
 //                           Navigator.push(
 //                               context,
 //                               MaterialPageRoute(
-//                                   builder: (context) => QRScannerPage()));
+//                                   builder: (context) => QRViewExample()));
 //                         },
 //                         child: const Text("Scan QR code")),
 //                   ],
