@@ -72,6 +72,10 @@ class DatabaseController extends GetxController {
         .snapshots();
   }
 
+  Stream<QuerySnapshot> getAllTransactionRecords() {
+    return transactions.orderBy('timestamp', descending: true).snapshots();
+  }
+
   // return trabnsactions collection
   CollectionReference get transactions {
     return _firebaseFirestore.collection(dbTransactionsCollection);

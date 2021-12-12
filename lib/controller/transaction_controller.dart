@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_wallet_app/constants.dart';
 import 'package:e_wallet_app/controller/database_controller.dart';
 import 'package:e_wallet_app/models/transaction_model.dart';
-import 'package:e_wallet_app/view/transaction_history_page.dart';
 import 'package:get/get.dart';
 
 class TransactionController extends GetxController {
@@ -17,12 +16,9 @@ class TransactionController extends GetxController {
     } else {
       try {
         // update user's balancer
-        print(uid);
         dynamic curBalance = await _databaseController.getSpecificDataField(
             dbUsersCollection, uid, 'balance');
-        print(curBalance);
         dynamic newBalance = curBalance + amount;
-        print(newBalance);
 
         _databaseController.updateUserCollection(uid, {'balance': newBalance});
 
@@ -47,22 +43,17 @@ class TransactionController extends GetxController {
     if (curBalance < amount) {
       return "You don't have enough money";
     } else {
-      print("cur balance = ${curBalance}");
       try {
         // update sender's balance
         dynamic newBalance = curBalance - amount;
         _databaseController.updateUserCollection(uid, {'balance': newBalance});
-        print(newBalance);
 
         // update receiver's balance
         dynamic receiverUid =
             await _databaseController.getUserIdByEmail(receiverEmail);
         dynamic receiverCurBalance = await _databaseController
             .getSpecificDataField(dbUsersCollection, receiverUid, 'balance');
-        print(receiverUid);
-        print(receiverCurBalance);
         dynamic receiverNewBalance = receiverCurBalance + amount;
-        print(receiverNewBalance);
         _databaseController
             .updateUserCollection(receiverUid, {'balance': receiverNewBalance});
 
@@ -85,18 +76,6 @@ class TransactionController extends GetxController {
     return TransactionRecord.fromFirestore(doc);
   }
 
-  // Get lists of documents transactions relating to user
-  // Future<List<TransactionRecord>> getAllTransactionRecordsByUid(uid) {
-  //   List<TransactionRecord> listTransactionRecords;
-  //   QuerySnapshot querySnapshot = _databaseController.transactions
-  //       .where('sender_id', isEqualTo: uid)
-  //       .get();
-
-  //   querySnapshot.forEach((doc) =>
-  //       listTransactionRecords.add(TransactionRecord.fromFirestore(doc)));
-  //   // .((list) =>
-  //   //     list.docs.forEach((doc) => TransactionRecord.fromFirestore(doc)));
-  // }
   Stream<List<TransactionRecord>> getAllTransactionRecordsByUid(uid) {
     Stream<QuerySnapshot> streamQuerySnapshot = _databaseController.transactions
         .where('sender_id', isEqualTo: uid)

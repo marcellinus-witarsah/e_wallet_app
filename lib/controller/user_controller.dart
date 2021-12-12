@@ -1,14 +1,10 @@
-import 'dart:io';
-
 import 'package:barcode_widget/barcode_widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_wallet_app/constants.dart';
 import 'package:e_wallet_app/controller/database_controller.dart';
 import 'package:e_wallet_app/enums.dart';
 import 'package:e_wallet_app/models/user_model.dart';
 import 'package:e_wallet_app/services/auth_service.dart';
-import 'package:e_wallet_app/services/firebase_database_service.dart';
-import 'package:e_wallet_app/ui/common/theme_helper.dart';
+import 'package:e_wallet_app/view/common/theme_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -90,7 +86,6 @@ class UserController extends GetxController implements AuthService {
     //using firebase function through Firebase Auth instance for sign out
     return _firebaseAuth.signOut();
   }
-
 
   Future updateEmail(newEmail) {
     //using firebase function through Firebase Auth instance for sign out

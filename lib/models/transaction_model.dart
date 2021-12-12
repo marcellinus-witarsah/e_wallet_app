@@ -28,24 +28,4 @@ class TransactionRecord {
         amount: map['amount'],
         timestamp: map['timestamp']);
   }
-  // factory UserModel.fromMap(Map<String, dynamic> map) {
-  //   return UserModel(uid: map['uid']);
-  // }
 }
-
-// class Transactions {
-//   List<Transaction> _transactions = [];
-//   FirebaseDatabaseService _db = FirebaseDatabaseService();
-
-//   Transactions({required db}) : _db = db;
-
-//   void set db(FirebaseDatabaseService db) => _db = db;
-
-//   List<Transaction> get transactions {
-//     return _transactions;
-//   }
-
-//   void addTransaction(Transaction transaction) {
-//     transactions.add(transaction);
-//   }
-// }

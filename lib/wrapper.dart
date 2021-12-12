@@ -2,7 +2,7 @@ import 'package:e_wallet_app/controller/database_controller.dart';
 import 'package:e_wallet_app/controller/user_controller.dart';
 import 'package:e_wallet_app/main.dart';
 import 'package:e_wallet_app/models/user_model.dart';
-import 'package:e_wallet_app/ui/home_screen_with_sidebar.dart';
+import 'package:e_wallet_app/view/home_screen_with_sidebar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
